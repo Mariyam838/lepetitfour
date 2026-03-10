@@ -1,0 +1,1615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Le Petit Four — Artisan Bakery & Pâtisserie</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Poppins:wght@300;400;500;600&family=Great+Vibes&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Our main stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+  /* ══════════════════════════════════════════
+     LE PETIT FOUR — SPLASH SCREEN STYLES
+  ══════════════════════════════════════════ */
+  :root {
+    --gold:        #C9933A;
+    --gold-light:  #E8C070;
+  }
+
+  /* ══ SPLASH SHELL ══ */
+  #splash {
+    position: fixed; inset: 0; z-index: 9999;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--brown);
+    transition: opacity 0.9s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  #splash.exit {
+    opacity: 0;
+    transform: scale(1.04);
+    pointer-events: none;
+  }
+
+  /* ── BACKGROUND LAYERS ── */
+  .splash-bg-photo {
+    position: absolute; inset: 0;
+    background-image: url('https://images.unsplash.com/photo-1517433367423-c7e5b0f35086?w=1600&q=85');
+    background-size: cover;
+    background-position: center 40%;
+    opacity: 0;
+    animation: bgReveal 2.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+  }
+  @keyframes bgReveal { to { opacity: 0.18; } }
+
+  .splash-vignette {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 70% at 50% 50%,
+        rgba(61,31,26,0) 0%, rgba(61,31,26,0.55) 60%, rgba(20,8,5,0.92) 100%),
+      linear-gradient(180deg, rgba(20,8,5,0.6) 0%, rgba(61,31,26,0.3) 50%, rgba(20,8,5,0.7) 100%);
+  }
+
+  .splash-grain {
+    position: absolute; inset: 0; opacity: 0.045;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px; mix-blend-mode: overlay;
+  }
+
+  .splash-glow {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 55% at 50% 48%,
+      rgba(232,129,58,0.12) 0%, rgba(201,147,58,0.06) 40%, transparent 70%);
+  }
+
+  /* Corner flourishes */
+  .corner-fl {
+    position: absolute; width: 120px; height: 120px;
+    opacity: 0; animation: spFadeIn 1s ease 1.4s forwards;
+  }
+  .corner-fl svg { width: 100%; height: 100%; }
+  .corner-fl.tl { top: 32px; left: 32px; }
+  .corner-fl.tr { top: 32px; right: 32px; transform: scaleX(-1); }
+  .corner-fl.bl { bottom: 32px; left: 32px; transform: scaleY(-1); }
+  .corner-fl.br { bottom: 32px; right: 32px; transform: scale(-1); }
+
+  @keyframes spFadeIn { to { opacity: 1; } }
+
+  /* Horizontal gold rules */
+  .splash-rule {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(201,147,58,0.5), rgba(201,147,58,0.7), rgba(201,147,58,0.5), transparent);
+    opacity: 0; animation: ruleReveal 1.2s ease forwards;
+  }
+  .splash-rule.top    { top: 72px;    width: 0; animation-delay: 1.2s; }
+  .splash-rule.bottom { bottom: 72px; width: 0; animation-delay: 1.3s; }
+  @keyframes ruleReveal {
+    from { width: 0; opacity: 0; }
+    to   { width: min(640px, 72vw); opacity: 1; }
+  }
+
+  /* ══ CENTRE CONTENT ══ */
+  .splash-content {
+    position: relative; z-index: 2;
+    display: flex; flex-direction: column;
+    align-items: center; text-align: center;
+    padding: 0 24px; gap: 0;
+  }
+
+  /* Emblem */
+  .splash-emblem {
+    width: 118px; height: 118px; margin-bottom: 32px;
+    opacity: 0; transform: scale(0.82) translateY(12px);
+    animation: emblemIn 1s cubic-bezier(0.16,1,0.3,1) 0.5s forwards;
+  }
+  @keyframes emblemIn { to { opacity: 1; transform: scale(1) translateY(0); } }
+
+  .emblem-ring        { fill: none; stroke: var(--gold); stroke-width: 1.2; opacity: 0.85; }
+  .emblem-ring-inner  { fill: none; stroke: var(--gold); stroke-width: 0.6; opacity: 0.45; stroke-dasharray: 4 3; }
+  .emblem-wheat       { fill: var(--gold-light); opacity: 0.9; }
+  .emblem-text-path   { fill: var(--gold-light); font-size: 7.2px; letter-spacing: 0.18em; }
+  .emblem-center-bg   { fill: rgba(61,31,26,0.6); }
+  .emblem-initial     { fill: var(--cream); opacity: 0.95; }
+  .emblem-sprig       { fill: none; stroke: var(--gold); stroke-width: 1.4; stroke-linecap: round; }
+  .emblem-berry       { fill: var(--gold); }
+
+  /* Eyebrow */
+  .splash-eyebrow {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(11px, 1.6vw, 13px); font-weight: 300;
+    letter-spacing: 0.42em; text-transform: uppercase;
+    color: var(--gold-light); opacity: 0;
+    display: flex; align-items: center; gap: 14px; margin-bottom: 18px;
+    animation: spSlideUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.9s forwards;
+  }
+  .splash-eyebrow::before, .splash-eyebrow::after {
+    content: ''; display: block; width: 36px; height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold)); opacity: 0.7;
+  }
+  .splash-eyebrow::after { background: linear-gradient(to left, transparent, var(--gold)); }
+
+  /* Title */
+  .splash-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(52px, 9vw, 108px); font-weight: 900;
+    letter-spacing: -0.01em; line-height: 0.88; color: var(--cream);
+    opacity: 0; animation: spSlideUp 0.9s cubic-bezier(0.16,1,0.3,1) 1.0s forwards;
+    margin-bottom: 6px;
+  }
+  .splash-title em {
+    font-style: italic; font-weight: 400; color: var(--gold-light);
+    display: block; font-size: 0.88em; line-height: 1.05;
+  }
+
+  /* Subtitle */
+  .splash-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(14px, 2.2vw, 18px); font-style: italic; font-weight: 300;
+    color: rgba(255,248,240,0.55); letter-spacing: 0.06em;
+    margin-top: 20px; margin-bottom: 48px;
+    opacity: 0; animation: spSlideUp 0.8s cubic-bezier(0.16,1,0.3,1) 1.18s forwards;
+  }
+
+  /* Gold divider */
+  .splash-divider {
+    display: flex; align-items: center; gap: 14px; margin-bottom: 48px;
+    opacity: 0; animation: spFadeIn 0.8s ease 1.3s forwards;
+  }
+  .splash-divider-line {
+    width: 60px; height: 1px;
+    background: linear-gradient(to right, transparent, rgba(201,147,58,0.7));
+  }
+  .splash-divider-line.r { background: linear-gradient(to left, transparent, rgba(201,147,58,0.7)); }
+  .splash-divider-diamond { width: 6px; height: 6px; background: var(--gold); transform: rotate(45deg); opacity: 0.9; }
+  .splash-divider-dot     { width: 3px; height: 3px; background: var(--gold); border-radius: 50%; opacity: 0.5; }
+
+  /* Enter button */
+  .splash-enter {
+    position: relative; font-family: 'Poppins', sans-serif;
+    font-size: 11px; font-weight: 500; letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--brown);
+    background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 60%, var(--orange) 100%);
+    border: none; padding: 16px 52px; cursor: pointer; overflow: hidden;
+    opacity: 0; transform: translateY(10px);
+    animation: spSlideUp 0.8s cubic-bezier(0.16,1,0.3,1) 1.45s forwards;
+    box-shadow: 0 8px 32px rgba(232,129,58,0.35), 0 2px 8px rgba(61,31,26,0.25);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .splash-enter::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.18), transparent 60%);
+    pointer-events: none;
+  }
+  .splash-enter::after {
+    content: ''; position: absolute; top: -50%; left: -60%;
+    width: 40%; height: 200%;
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.22), transparent);
+    transform: skewX(-20deg); animation: shimmer 3.5s ease 2.2s infinite;
+  }
+  @keyframes shimmer { 0% { left: -60%; } 100% { left: 160%; } }
+  .splash-enter:hover  { transform: translateY(-3px); box-shadow: 0 14px 44px rgba(232,129,58,0.45), 0 4px 12px rgba(61,31,26,0.3); }
+  .splash-enter:active { transform: translateY(0); }
+
+  /* Skip link */
+  .splash-skip {
+    margin-top: 22px; font-family: 'Cormorant Garamond', serif;
+    font-size: 12px; font-style: italic; color: rgba(255,248,240,0.28);
+    letter-spacing: 0.06em; cursor: pointer;
+    transition: color 0.25s; opacity: 0;
+    animation: spFadeIn 0.8s ease 1.9s forwards;
+    background: none; border: none;
+  }
+  .splash-skip:hover { color: rgba(255,248,240,0.55); }
+
+  /* Since badge */
+  .splash-since {
+    position: absolute; bottom: 44px; right: 56px;
+    display: flex; flex-direction: column; align-items: flex-end;
+    opacity: 0; animation: spFadeIn 1s ease 1.6s forwards;
+  }
+  .since-year {
+    font-family: 'Playfair Display', serif; font-size: 52px; font-weight: 900;
+    font-style: italic; line-height: 1; color: rgba(201,147,58,0.18); letter-spacing: -0.02em;
+  }
+  .since-label {
+    font-family: 'Cormorant Garamond', serif; font-size: 9px;
+    letter-spacing: 0.35em; text-transform: uppercase; color: rgba(201,147,58,0.35); margin-top: -4px;
+  }
+
+  /* Location tag */
+  .splash-loc {
+    position: absolute; bottom: 44px; left: 56px;
+    opacity: 0; animation: spFadeIn 1s ease 1.6s forwards;
+  }
+  .splash-loc-inner {
+    display: flex; align-items: center; gap: 8px;
+    font-family: 'Cormorant Garamond', serif; font-size: 11px;
+    font-style: italic; letter-spacing: 0.1em; color: rgba(201,147,58,0.45);
+  }
+  .splash-loc-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--gold); opacity: 0.5;
+    animation: pulseDot 2s ease-in-out infinite;
+  }
+  @keyframes pulseDot {
+    0%,100% { opacity: 0.5; transform: scale(1); }
+    50%      { opacity: 0.9; transform: scale(1.3); }
+  }
+
+  /* Loading bar */
+  .splash-loader {
+    position: absolute; bottom: 0; left: 0;
+    height: 2px; width: 0;
+    background: linear-gradient(to right, var(--orange-dark), var(--gold), var(--gold-light));
+    animation: loaderFill 1.8s cubic-bezier(0.4,0,0.2,1) 0.2s forwards;
+    box-shadow: 0 0 12px rgba(201,147,58,0.4);
+  }
+  @keyframes loaderFill { to { width: 100%; } }
+
+  @keyframes spSlideUp {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Splash wordmark (matches nav logo) ── */
+  .splash-wordmark {
+    opacity: 0;
+    animation: spSlideUp 0.9s cubic-bezier(0.16,1,0.3,1) 1.0s forwards;
+    margin-bottom: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .splash-wm-line1 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    line-height: 1;
+  }
+  .splash-wm-script {
+    font-family: 'Great Vibes', cursive;
+    font-size: clamp(3rem, 8vw, 5.2rem);
+    color: #FFF8F0;
+    line-height: 1;
+    text-shadow: 0 4px 24px rgba(61,31,26,0.5);
+  }
+  .splash-wm-macaron {
+    width: clamp(38px, 6vw, 58px);
+    height: auto;
+    flex-shrink: 0;
+    margin-top: -4px;
+    filter: drop-shadow(0 2px 8px rgba(61,31,26,0.3));
+  }
+  .splash-wm-line2 {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+  }
+  .splash-wm-rule {
+    flex: 1;
+    height: 1px;
+    background: rgba(201,147,58,0.65);
+    display: block;
+    min-width: 30px;
+  }
+  .splash-wm-sub {
+    font-family: 'Poppins', sans-serif;
+    font-size: clamp(0.52rem, 1.2vw, 0.68rem);
+    font-weight: 500;
+    letter-spacing: 0.32em;
+    color: #E8C070;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 600px) {
+    .corner-fl { width: 72px; height: 72px; }
+    .corner-fl.tl, .corner-fl.tr { top: 20px; }
+    .corner-fl.tl, .corner-fl.bl { left: 20px; }
+    .corner-fl.tr, .corner-fl.br { right: 20px; }
+    .corner-fl.bl, .corner-fl.br { bottom: 20px; }
+    .splash-rule.top    { top: 48px; }
+    .splash-rule.bottom { bottom: 48px; }
+    .splash-since, .splash-loc { display: none; }
+    .splash-enter { padding: 15px 38px; }
+  }
+  </style>
+</head>
+
+<body>
+
+  <!-- ============================================================
+       SPLASH SCREEN
+  ============================================================ -->
+  <div id="splash">
+
+    <div class="splash-bg-photo"></div>
+    <div class="splash-vignette"></div>
+    <div class="splash-grain"></div>
+    <div class="splash-glow"></div>
+    <div class="splash-loader"></div>
+
+    <div class="splash-rule top"></div>
+    <div class="splash-rule bottom"></div>
+
+    <div class="corner-fl tl">
+      <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <line x1="8" y1="8" x2="60" y2="8" stroke="#C9933A" stroke-width="0.8" opacity="0.6"/>
+        <line x1="8" y1="8" x2="8" y2="60" stroke="#C9933A" stroke-width="0.8" opacity="0.6"/>
+        <line x1="8" y1="14" x2="40" y2="14" stroke="#C9933A" stroke-width="0.5" opacity="0.3"/>
+        <line x1="14" y1="8" x2="14" y2="40" stroke="#C9933A" stroke-width="0.5" opacity="0.3"/>
+        <path d="M22 90 Q28 72 22 55" stroke="#C9933A" stroke-width="1.2" stroke-linecap="round" opacity="0.55"/>
+        <ellipse cx="19" cy="50" rx="4.5" ry="7" fill="#C9933A" opacity="0.35" transform="rotate(-15 19 50)"/>
+        <ellipse cx="25" cy="46" rx="4.5" ry="7" fill="#C9933A" opacity="0.35" transform="rotate(12 25 46)"/>
+        <ellipse cx="22" cy="41" rx="4" ry="6.5" fill="#C9933A" opacity="0.4" transform="rotate(-5 22 41)"/>
+        <circle cx="38" cy="22" r="1.5" fill="#C9933A" opacity="0.3"/>
+        <circle cx="28" cy="20" r="1" fill="#C9933A" opacity="0.25"/>
+      </svg>
+    </div>
+    <div class="corner-fl tr">
+      <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <line x1="8" y1="8" x2="60" y2="8" stroke="#C9933A" stroke-width="0.8" opacity="0.6"/>
+        <line x1="8" y1="8" x2="8" y2="60" stroke="#C9933A" stroke-width="0.8" opacity="0.6"/>
+        <line x1="8" y1="14" x2="40" y2="14" stroke="#C9933A" stroke-width="0.5" opacity="0.3"/>
+        <line x1="14" y1="8" x2="14" y2="40" stroke="#C9933A" stroke-width="0.5" opacity="0.3"/>
+        <path d="M22 90 Q28 72 22 55" stroke="#C9933A" stroke-width="1.2" stroke-linecap="round" opacity="0.55"/>
+        <ellipse cx="19" cy="50" rx="4.5" ry="7" fill="#C9933A" opacity="0.35" transform="rotate(-15 19 50)"/>
+        <ellipse cx="25" cy="46" rx="4.5" ry="7" fill="#C9933A" opacity="0.35" transform="rotate(12 25 46)"/>
+        <ellipse cx="22" cy="41" rx="4" ry="6.5" fill="#C9933A" opacity="0.4" transform="rotate(-5 22 41)"/>
+        <circle cx="38" cy="22" r="1.5" fill="#C9933A" opacity="0.3"/>
+        <circle cx="28" cy="20" r="1" fill="#C9933A" opacity="0.25"/>
+      </svg>
+    </div>
+    <div class="corner-fl bl">
+      <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <line x1="8" y1="8" x2="60" y2="8" stroke="#C9933A" stroke-width="0.8" opacity="0.6"/>
+        <line x1="8" y1="8" x2="8" y2="60" stroke="#C9933A" stroke-width="0.8" opacity="0.6"/>
+        <line x1="8" y1="14" x2="40" y2="14" stroke="#C9933A" stroke-width="0.5" opacity="0.3"/>
+        <line x1="14" y1="8" x2="14" y2="40" stroke="#C9933A" stroke-width="0.5" opacity="0.3"/>
+        <path d="M22 90 Q28 72 22 55" stroke="#C9933A" stroke-width="1.2" stroke-linecap="round" opacity="0.55"/>
+        <ellipse cx="19" cy="50" rx="4.5" ry="7" fill="#C9933A" opacity="0.35" transform="rotate(-15 19 50)"/>
+        <ellipse cx="25" cy="46" rx="4.5" ry="7" fill="#C9933A" opacity="0.35" transform="rotate(12 25 46)"/>
+        <ellipse cx="22" cy="41" rx="4" ry="6.5" fill="#C9933A" opacity="0.4" transform="rotate(-5 22 41)"/>
+        <circle cx="38" cy="22" r="1.5" fill="#C9933A" opacity="0.3"/>
+        <circle cx="28" cy="20" r="1" fill="#C9933A" opacity="0.25"/>
+      </svg>
+    </div>
+    <div class="corner-fl br">
+      <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <line x1="8" y1="8" x2="60" y2="8" stroke="#C9933A" stroke-width="0.8" opacity="0.6"/>
+        <line x1="8" y1="8" x2="8" y2="60" stroke="#C9933A" stroke-width="0.8" opacity="0.6"/>
+        <line x1="8" y1="14" x2="40" y2="14" stroke="#C9933A" stroke-width="0.5" opacity="0.3"/>
+        <line x1="14" y1="8" x2="14" y2="40" stroke="#C9933A" stroke-width="0.5" opacity="0.3"/>
+        <path d="M22 90 Q28 72 22 55" stroke="#C9933A" stroke-width="1.2" stroke-linecap="round" opacity="0.55"/>
+        <ellipse cx="19" cy="50" rx="4.5" ry="7" fill="#C9933A" opacity="0.35" transform="rotate(-15 19 50)"/>
+        <ellipse cx="25" cy="46" rx="4.5" ry="7" fill="#C9933A" opacity="0.35" transform="rotate(12 25 46)"/>
+        <ellipse cx="22" cy="41" rx="4" ry="6.5" fill="#C9933A" opacity="0.4" transform="rotate(-5 22 41)"/>
+        <circle cx="38" cy="22" r="1.5" fill="#C9933A" opacity="0.3"/>
+        <circle cx="28" cy="20" r="1" fill="#C9933A" opacity="0.25"/>
+      </svg>
+    </div>
+
+    <div class="splash-since">
+      <span class="since-year">1989</span>
+      <span class="since-label">Est. San Francisco</span>
+    </div>
+
+    <div class="splash-loc">
+      <div class="splash-loc-inner">
+        <span class="splash-loc-dot"></span>
+        48 Rue des Fleurs, Old Town
+      </div>
+    </div>
+
+    <div class="splash-content">
+
+      <svg class="splash-emblem" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle class="emblem-ring-inner" cx="60" cy="60" r="56"/>
+        <circle class="emblem-ring" cx="60" cy="60" r="50"/>
+        <circle class="emblem-ring" cx="60" cy="60" r="44" stroke-width="0.6" opacity="0.4"/>
+        <circle class="emblem-center-bg" cx="60" cy="60" r="43"/>
+        <path class="emblem-sprig" d="M46 82 Q44 70 46 60" stroke-width="1.3"/>
+        <ellipse class="emblem-wheat" cx="43" cy="56" rx="4" ry="6.5" transform="rotate(-18 43 56)" opacity="0.75"/>
+        <ellipse class="emblem-wheat" cx="48" cy="52" rx="4" ry="6.5" transform="rotate(10 48 52)" opacity="0.75"/>
+        <ellipse class="emblem-wheat" cx="45" cy="47" rx="3.5" ry="6" transform="rotate(-6 45 47)" opacity="0.85"/>
+        <path class="emblem-sprig" d="M74 82 Q76 70 74 60" stroke-width="1.3"/>
+        <ellipse class="emblem-wheat" cx="77" cy="56" rx="4" ry="6.5" transform="rotate(18 77 56)" opacity="0.75"/>
+        <ellipse class="emblem-wheat" cx="72" cy="52" rx="4" ry="6.5" transform="rotate(-10 72 52)" opacity="0.75"/>
+        <ellipse class="emblem-wheat" cx="75" cy="47" rx="3.5" ry="6" transform="rotate(6 75 47)" opacity="0.85"/>
+        <path id="arcTop" d="M 14 60 A 46 46 0 0 1 106 60" fill="none"/>
+        <path id="arcBot" d="M 18 68 A 42 42 0 0 0 102 68" fill="none"/>
+        <text class="emblem-text-path" font-family="Cormorant Garamond, serif">
+          <textPath href="#arcTop" startOffset="50%" text-anchor="middle" letter-spacing="5">LE PETIT FOUR</textPath>
+        </text>
+        <text class="emblem-text-path" font-family="Cormorant Garamond, serif" font-size="5.5px" opacity="0.6">
+          <textPath href="#arcBot" startOffset="50%" text-anchor="middle" letter-spacing="4">ARTISAN PÂTISSERIE</textPath>
+        </text>
+        <circle class="emblem-berry" cx="60" cy="14" r="2.2" opacity="0.7"/>
+        <circle class="emblem-berry" cx="60" cy="106" r="2.2" opacity="0.7"/>
+        <circle class="emblem-berry" cx="14" cy="60" r="1.6" opacity="0.5"/>
+        <circle class="emblem-berry" cx="106" cy="60" r="1.6" opacity="0.5"/>
+        <path class="emblem-initial"
+          d="M52 72 C52 72 48 65 50 58 C52 51 58 48 60 48 C62 48 68 51 70 58 C72 65 68 72 68 72 Z"
+          opacity="0.9"/>
+        <path fill="none" stroke="rgba(61,31,26,0.5)" stroke-width="1"
+          d="M55 72 C54 68 52 63 53 58.5 M65 72 C66 68 68 63 67 58.5"/>
+        <path d="M60 65 L61.4 67.8 L60 70.6 L58.6 67.8 Z" fill="#C9933A" opacity="0.8"/>
+      </svg>
+
+      <p class="splash-eyebrow">Artisan Pâtisserie</p>
+
+      <!-- Wordmark title matching the nav logo style -->
+      <div class="splash-wordmark">
+        <div class="splash-wm-line1">
+          <span class="splash-wm-script">le petit</span>
+          <svg class="splash-wm-macaron" viewBox="0 0 44 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="22" cy="8"  rx="17" ry="8.5" fill="#F2AEBE"/>
+            <ellipse cx="17" cy="5.5" rx="6" ry="3" fill="white" opacity="0.25"/>
+            <rect x="5" y="14" width="34" height="6" fill="#FFF0F4"/>
+            <ellipse cx="22" cy="26" rx="17" ry="8.5" fill="#F2AEBE"/>
+            <ellipse cx="7"  cy="18" rx="2.6" ry="1.8" fill="#e494b2"/>
+            <ellipse cx="12" cy="20" rx="2.6" ry="1.8" fill="#e494b2"/>
+            <ellipse cx="17" cy="21" rx="2.6" ry="1.8" fill="#e494b2"/>
+            <ellipse cx="22" cy="21.4" rx="2.6" ry="1.8" fill="#e494b2"/>
+            <ellipse cx="27" cy="21" rx="2.6" ry="1.8" fill="#e494b2"/>
+            <ellipse cx="32" cy="20" rx="2.6" ry="1.8" fill="#e494b2"/>
+            <ellipse cx="37" cy="18" rx="2.6" ry="1.8" fill="#e494b2"/>
+          </svg>
+          <span class="splash-wm-script">four</span>
+        </div>
+        <div class="splash-wm-line2">
+          <span class="splash-wm-rule"></span>
+          <span class="splash-wm-sub">PÂTISSERIE</span>
+          <span class="splash-wm-rule"></span>
+        </div>
+      </div>
+
+      <p class="splash-subtitle">
+        Handcrafted with love &nbsp;·&nbsp; Baked before dawn &nbsp;·&nbsp; Since 1989
+      </p>
+
+      <div class="splash-divider">
+        <div class="splash-divider-line"></div>
+        <div class="splash-divider-dot"></div>
+        <div class="splash-divider-diamond"></div>
+        <div class="splash-divider-dot"></div>
+        <div class="splash-divider-line r"></div>
+      </div>
+
+      <button class="splash-enter" onclick="enterSite()">Enter the Bakery</button>
+      <button class="splash-skip"  onclick="enterSite()">or continue straight in →</button>
+
+    </div>
+  </div>
+  <!-- END SPLASH SCREEN -->
+
+
+  <!-- ============================================================
+       NAVIGATION BAR
+       Fixed at the top of the page. Shrinks on scroll (via JS).
+       On mobile the links hide and a hamburger button shows.
+  ============================================================ -->
+  <nav id="nav">
+
+    <!-- Logo / Brand -->
+    <a class="nav-brand" href="#" onclick="return showPage('home')">
+      <div class="logo-wrap">
+        <div class="logo-line1">
+          <span class="logo-script">le petit</span>
+          <!-- Macaron SVG inline -->
+          <svg class="logo-macaron" viewBox="0 0 36 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- top shell -->
+            <ellipse cx="18" cy="7"  rx="14" ry="7"   fill="#F2AEBE"/>
+            <ellipse cx="14" cy="5"  rx="5"  ry="2.5" fill="white" opacity="0.28"/>
+            <!-- cream -->
+            <rect x="4" y="12" width="28" height="4.5" fill="#FFF0F4"/>
+            <!-- bottom shell -->
+            <ellipse cx="18" cy="21" rx="14" ry="7"   fill="#F2AEBE"/>
+            <!-- feet bumps -->
+            <ellipse cx="6"  cy="14.5" rx="2.2" ry="1.5" fill="#e494b2"/>
+            <ellipse cx="10" cy="16"   rx="2.2" ry="1.5" fill="#e494b2"/>
+            <ellipse cx="14" cy="16.8" rx="2.2" ry="1.5" fill="#e494b2"/>
+            <ellipse cx="18" cy="17"   rx="2.2" ry="1.5" fill="#e494b2"/>
+            <ellipse cx="22" cy="16.8" rx="2.2" ry="1.5" fill="#e494b2"/>
+            <ellipse cx="26" cy="16"   rx="2.2" ry="1.5" fill="#e494b2"/>
+            <ellipse cx="30" cy="14.5" rx="2.2" ry="1.5" fill="#e494b2"/>
+          </svg>
+          <span class="logo-script">four</span>
+        </div>
+        <div class="logo-line2">
+          <span class="logo-rule"></span>
+          <span class="logo-sub">PÂTISSERIE</span>
+          <span class="logo-rule"></span>
+        </div>
+      </div>
+    </a>
+
+    <!-- Desktop navigation links -->
+    <ul class="nav-links">
+      <li><a href="#" onclick="return showPage('home')"    id="nl-home"    class="active">Home</a></li>
+      <li><a href="#" onclick="return showPage('menu')"    id="nl-menu">Menu</a></li>
+      <li><a href="#" onclick="return showPage('about')"   id="nl-about">About</a></li>
+      <li><a href="#" onclick="return showPage('custom')"  id="nl-custom">Custom Orders</a></li>
+      <li><a href="#" onclick="return showPage('gallery')" id="nl-gallery">Gallery</a></li>
+      <li><a href="#" onclick="return showPage('contact')" id="nl-contact" class="nav-cta">Contact</a></li>
+
+      <!-- Shopping cart button with item count badge -->
+      <li>
+        <button class="cart-btn" onclick="toggleCart()" aria-label="Open shopping cart">
+          <svg viewBox="0 0 24 24">
+            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <path d="M16 10a4 4 0 01-8 0" />
+          </svg>
+          <span class="cart-count" id="cartCount">0</span>
+        </button>
+      </li>
+    </ul>
+
+    <!-- Hamburger button — only visible on mobile -->
+    <button class="hamburger" onclick="toggleMob()" aria-label="Open mobile menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+  </nav>
+
+  <!-- Mobile dropdown menu (shown when hamburger is clicked) -->
+  <div class="mob-menu" id="mobMenu">
+    <a href="#" onclick="showPage('home');   toggleMob()">Home</a>
+    <a href="#" onclick="showPage('menu');   toggleMob()">Menu</a>
+    <a href="#" onclick="showPage('about');  toggleMob()">About Us</a>
+    <a href="#" onclick="showPage('custom'); toggleMob()">Custom Orders</a>
+    <a href="#" onclick="showPage('gallery');toggleMob()">Gallery</a>
+    <a href="#" onclick="showPage('contact');toggleMob()">Contact</a>
+  </div>
+
+
+  <!-- ============================================================
+       PAGE: HOME
+       The main landing page shown when the site first loads.
+  ============================================================ -->
+  <div class="page active" id="home">
+
+    <!-- ── HERO SECTION ── -->
+    <section class="hero">
+
+      <!-- Left side: headline, description, buttons, stats -->
+      <div class="hero-left">
+
+        <!-- Small pill badge at the top -->
+        <div class="hero-pill">
+          <div class="hero-pill-dot">
+            <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=60&q=80" alt="Bakery thumbnail" />
+          </div>
+          <span>Award-Winning Pâtisserie Since 1989</span>
+        </div>
+
+        <!-- Main headline -->
+        <h1 class="hero-title">
+          Freshly Baked
+          <em>Happiness</em>
+          Every Day
+        </h1>
+
+        <p class="hero-desc">
+          Handcrafted breads, cakes, and pastries made with the finest
+          ingredients — baked before dawn, delivered with love.
+        </p>
+
+        <!-- Call-to-action buttons -->
+        <div class="hero-actions">
+          <button class="btn btn-secondary" onclick="showPage('menu')">View Full Menu</button>
+          <button class="btn btn-outline"   onclick="showPage('custom')">Custom Cake Order</button>
+        </div>
+
+        <!-- Three quick stats -->
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <strong>35+</strong>
+            <span>Years Baking</span>
+          </div>
+          <div class="hero-stat">
+            <strong>200+</strong>
+            <span>Menu Items</span>
+          </div>
+          <div class="hero-stat">
+            <strong>15K+</strong>
+            <span>Happy Customers</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right side: large hero photo with floating info cards -->
+      <div class="hero-right">
+        <img
+          class="hero-img-main"
+          src="https://images.unsplash.com/photo-1571115177098-24ec42ed204d?w=900&q=85"
+          alt="Fresh pastries and bread at Le Petit Four bakery"
+        />
+        <!-- Dark gradient overlay on the left edge so left column blends in -->
+        <div class="hero-img-overlay"></div>
+
+        <!-- Floating card 1: product preview -->
+        <div class="hero-float-1">
+          <div class="fc-img">
+            <img src="https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=100&q=80" alt="Butter croissant" />
+          </div>
+          <div class="fc-label">
+            <strong>Butter Croissant</strong>
+            <span>Baked fresh at 5 AM daily</span>
+          </div>
+        </div>
+
+        <!-- Floating card 2: star rating -->
+        <div class="hero-float-2">
+          <div class="fc2-star">⭐</div>
+          <div class="fc2-label">
+            <strong>4.9 / 5 Rating</strong>
+            <span>2,500+ customer reviews</span>
+          </div>
+        </div>
+      </div>
+
+    </section>
+    <!-- END hero -->
+
+
+    <!-- ── SCROLLING MARQUEE TICKER ── -->
+    <div class="marquee-bar">
+      <div class="marquee-track">
+        <!-- Items are duplicated so the loop is seamless -->
+        <span class="m-item">Artisan Sourdough</span>   <span class="m-dot"> ✦ </span>
+        <span class="m-item">Butter Croissants</span>    <span class="m-dot"> ✦ </span>
+        <span class="m-item">Custom Birthday Cakes</span><span class="m-dot"> ✦ </span>
+        <span class="m-item">Red Velvet Cake</span>      <span class="m-dot"> ✦ </span>
+        <span class="m-item">Pain au Chocolat</span>     <span class="m-dot"> ✦ </span>
+        <span class="m-item">Seasonal Fruit Tarts</span> <span class="m-dot"> ✦ </span>
+        <span class="m-item">Free Delivery Over $50</span><span class="m-dot"> ✦ </span>
+        <span class="m-item">Wedding Cakes</span>        <span class="m-dot"> ✦ </span>
+        <!-- duplicate set -->
+        <span class="m-item">Artisan Sourdough</span>   <span class="m-dot"> ✦ </span>
+        <span class="m-item">Butter Croissants</span>    <span class="m-dot"> ✦ </span>
+        <span class="m-item">Custom Birthday Cakes</span><span class="m-dot"> ✦ </span>
+        <span class="m-item">Red Velvet Cake</span>      <span class="m-dot"> ✦ </span>
+        <span class="m-item">Pain au Chocolat</span>     <span class="m-dot"> ✦ </span>
+        <span class="m-item">Seasonal Fruit Tarts</span> <span class="m-dot"> ✦ </span>
+        <span class="m-item">Free Delivery Over $50</span><span class="m-dot"> ✦ </span>
+        <span class="m-item">Wedding Cakes</span>        <span class="m-dot"> ✦ </span>
+      </div>
+    </div>
+
+
+    <!-- ── FEATURED PRODUCTS SECTION ── -->
+    <section class="featured-sec fu">
+      <div class="sec-head">
+        <div>
+          <div class="s-label">Our Bestsellers</div>
+          <h2 class="s-title">Made With Love <em>Every Morning</em></h2>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="showPage('menu')">View Full Menu →</button>
+      </div>
+      <!-- Product cards are injected here by script.js (renderProducts) -->
+      <div class="products-grid" id="featGrid"></div>
+    </section>
+
+
+    <!-- ── ABOUT PREVIEW SECTION ── -->
+    <section class="about-strip">
+
+      <!-- Photo collage on the left -->
+      <div class="img-collage fu">
+        <div class="c1">
+          <img src="https://images.unsplash.com/photo-1556911220-bff31c812dba?w=600&q=85" alt="Baker at work" />
+        </div>
+        <div class="c2">
+          <img src="https://images.unsplash.com/photo-1517433367423-c7e5b0f35086?w=400&q=85" alt="Fresh pastries display" />
+        </div>
+        <div class="c3">
+          <img src="https://images.unsplash.com/photo-1484723091739-30a097e8f929?w=400&q=85" alt="Artisan bread loaves" />
+        </div>
+      </div>
+
+      <!-- Text content on the right -->
+      <div class="fu" style="transition-delay: 0.15s;">
+        <div class="s-label">Our Story</div>
+        <h2 class="s-title" style="margin-bottom: 1rem;">
+          A Family Bakery <em>Built on Tradition</em>
+        </h2>
+        <p class="s-sub" style="margin-bottom: 1.5rem;">
+          Our bakery has been serving freshly baked goods made with love and
+          tradition since 1989. Every cake, pastry, and loaf is crafted using
+          high-quality, locally-sourced ingredients.
+        </p>
+
+        <!-- Four feature icons with labels -->
+        <div class="about-feats">
+          <div class="af">
+            <div class="af-icon">
+              <img src="https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=80&q=80" alt="Wheat field" />
+            </div>
+            <div class="af-text">
+              <strong>Organic Ingredients</strong>
+              <span>Sourced from local farms</span>
+            </div>
+          </div>
+          <div class="af">
+            <div class="af-icon">
+              <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=80&q=80" alt="Baker baking" />
+            </div>
+            <div class="af-text">
+              <strong>Baked Daily at 4 AM</strong>
+              <span>Always fresh, never stale</span>
+            </div>
+          </div>
+          <div class="af">
+            <div class="af-icon">
+              <img src="https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=80&q=80" alt="Delivery" />
+            </div>
+            <div class="af-text">
+              <strong>Same-Day Delivery</strong>
+              <span>Free on orders over $50</span>
+            </div>
+          </div>
+          <div class="af">
+            <div class="af-icon">
+              <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=80&q=80" alt="Custom cake" />
+            </div>
+            <div class="af-text">
+              <strong>Custom Orders</strong>
+              <span>Weddings, birthdays & more</span>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn btn-primary" style="margin-top: 2rem;" onclick="showPage('about')">
+          Our Full Story →
+        </button>
+      </div>
+
+    </section>
+    <!-- END about strip -->
+
+
+    <!-- ── SPECIAL OFFERS SECTION ── -->
+    <section class="offers-sec">
+
+      <div class="tc fu">
+        <div class="s-label">Limited Time</div>
+        <h2 class="s-title">Sweet <em>Deals</em> This Week</h2>
+      </div>
+
+      <div class="offers-grid fu" style="transition-delay: 0.1s;">
+
+        <!-- Offer card 1 -->
+        <div class="offer-card offer-card-1">
+          <img class="offer-img" src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&q=85" alt="Chocolate cake" />
+          <div class="offer-body">
+            <div class="offer-badge">Weekend Only</div>
+            <h3>20% Off All Cakes This Weekend</h3>
+            <p>Celebrate your weekend with our stunning celebration cakes, all at 20% off — no code needed.</p>
+            <button class="btn btn-white btn-sm" onclick="showPage('menu')">Shop Cakes →</button>
+          </div>
+        </div>
+
+        <!-- Offer card 2 -->
+        <div class="offer-card offer-card-2">
+          <img class="offer-img" src="https://images.unsplash.com/photo-1486427944299-d1955d23e34d?w=600&q=85" alt="Cupcakes" />
+          <div class="offer-body">
+            <div class="offer-badge">Buy More Save More</div>
+            <h3>Buy 2 Cupcakes, Get 1 Free</h3>
+            <p>Mix and match any flavours from our cupcake menu. The perfect excuse to try something new.</p>
+            <button class="btn btn-primary btn-sm" onclick="showPage('menu')">Get the Deal →</button>
+          </div>
+        </div>
+
+        <!-- Offer card 3 -->
+        <div class="offer-card offer-card-3">
+          <img class="offer-img" src="https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?w=600&q=85" alt="Cake delivery" />
+          <div class="offer-body">
+            <div class="offer-badge">Custom Orders</div>
+            <h3>Free Delivery on Custom Cakes</h3>
+            <p>Order any custom birthday or wedding cake and we'll deliver it anywhere in the city, free.</p>
+            <button class="btn btn-secondary btn-sm" onclick="showPage('custom')">Order Now →</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+    <!-- END offers -->
+
+
+    <!-- ── CUSTOMER REVIEWS SECTION ── -->
+    <section class="reviews-sec">
+
+      <div class="tc fu">
+        <div class="s-label">Testimonials</div>
+        <h2 class="s-title">What Our Customers <em>Say</em></h2>
+      </div>
+
+      <div class="reviews-grid fu" style="transition-delay: 0.1s;">
+
+        <!-- Review 1 -->
+        <div class="rev-card">
+          <div class="rev-quote">"</div>
+          <div class="rev-stars">★★★★★</div>
+          <p class="rev-text">
+            The sourdough here is the real deal — chewy, tangy, with that perfect
+            crust. I've been coming every Saturday for three years and it never disappoints.
+          </p>
+          <div class="rev-author">
+            <div class="rev-avatar">
+              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&q=80" alt="Sophie Martin" />
+            </div>
+            <div class="rev-info">
+              <strong>Sophie Martin</strong>
+              <span>Regular Customer · Verified</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Review 2 -->
+        <div class="rev-card">
+          <div class="rev-quote">"</div>
+          <div class="rev-stars">★★★★★</div>
+          <p class="rev-text">
+            Ordered a custom wedding cake and was absolutely blown away. The team
+            worked with us on every detail. It was the most beautiful and delicious
+            cake at our reception.
+          </p>
+          <div class="rev-author">
+            <div class="rev-avatar">
+              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&q=80" alt="James" />
+            </div>
+            <div class="rev-info">
+              <strong>James & Kate</strong>
+              <span>Wedding Cake Order · Verified</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Review 3 -->
+        <div class="rev-card">
+          <div class="rev-quote">"</div>
+          <div class="rev-stars">★★★★★</div>
+          <p class="rev-text">
+            The croissants are transcendent. Light, buttery, shatteringly flaky.
+            My kids now refuse any other bakery's croissants. This place has
+            completely ruined us — in the best way.
+          </p>
+          <div class="rev-author">
+            <div class="rev-avatar">
+              <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&q=80" alt="Laura Petit" />
+            </div>
+            <div class="rev-info">
+              <strong>Laura Petit</strong>
+              <span>Local Customer · Verified</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+    <!-- END reviews -->
+
+
+    <!-- ── NEWSLETTER SIGNUP ── -->
+    <section class="newsletter fu">
+      <div class="nl-text">
+        <h2>Get the Freshest Deals<br />Straight to Your Inbox</h2>
+        <p>Join 8,000+ subscribers. Weekly specials, new recipes, and first access to seasonal menus.</p>
+      </div>
+      <div class="nl-form">
+        <input type="email" id="nlEmail" placeholder="Your email address..." />
+        <button onclick="subNewsletter()">Subscribe</button>
+      </div>
+    </section>
+
+    <!-- Footer placeholder — filled by script.js -->
+    <div id="hfoot"></div>
+
+  </div>
+  <!-- END home page -->
+
+
+  <!-- ============================================================
+       PAGE: MENU
+       Tabbed product catalogue with 4 categories.
+  ============================================================ -->
+  <div class="page" id="menu">
+
+    <!-- Menu hero banner with background photo -->
+    <div class="menu-hero">
+      <img class="menu-hero-img" src="https://images.unsplash.com/photo-1517433367423-c7e5b0f35086?w=1400&q=85" alt="Bakery pastry display" />
+      <div class="menu-hero-content">
+        <h1>Our <em>Menu</em></h1>
+        <p>Everything baked fresh from scratch, every single morning. Sourced local. Made with love.</p>
+
+        <!-- Tab buttons — clicking calls switchTab() in script.js -->
+        <div class="menu-tabs">
+          <button class="tab-btn active"  onclick="switchTab('all',      this)">All Items</button>
+          <button class="tab-btn"         onclick="switchTab('cakes',    this)">Cakes</button>
+          <button class="tab-btn"         onclick="switchTab('pastries', this)">Pastries</button>
+          <button class="tab-btn"         onclick="switchTab('breads',   this)">Breads</button>
+          <button class="tab-btn"         onclick="switchTab('cupcakes', this)">Cupcakes</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Menu category grids — JS toggles which one is visible -->
+    <div class="menu-body">
+
+      <div class="m-cat active" id="mc-all">
+        <div class="menu-grid" id="mg-all"></div>
+      </div>
+
+      <div class="m-cat" id="mc-cakes">
+        <div class="m-cat-title">Cakes</div>
+        <div class="m-cat-sub">Celebration cakes, everyday indulgences, and everything in between.</div>
+        <div class="menu-grid" id="mg-cakes"></div>
+      </div>
+
+      <div class="m-cat" id="mc-pastries">
+        <div class="m-cat-title">Pastries & Viennoiseries</div>
+        <div class="m-cat-sub">Laminated, flaky, and impossibly buttery.</div>
+        <div class="menu-grid" id="mg-pastries"></div>
+      </div>
+
+      <div class="m-cat" id="mc-breads">
+        <div class="m-cat-title">Artisan Breads</div>
+        <div class="m-cat-sub">Long-fermented, slow-baked, real bread.</div>
+        <div class="menu-grid" id="mg-breads"></div>
+      </div>
+
+      <div class="m-cat" id="mc-cupcakes">
+        <div class="m-cat-title">Cupcakes</div>
+        <div class="m-cat-sub">Mini cakes, maximum joy.</div>
+        <div class="menu-grid" id="mg-cupcakes"></div>
+      </div>
+
+    </div>
+
+    <div id="mfoot"></div>
+  </div>
+  <!-- END menu page -->
+
+
+  <!-- ============================================================
+       PAGE: ABOUT
+       Bakery story, timeline, team bios, and brand values.
+  ============================================================ -->
+  <div class="page" id="about">
+
+    <!-- Split hero: photo left, text right -->
+    <section class="about-hero">
+
+      <div class="about-hero-img">
+        <img src="https://images.unsplash.com/photo-1556911220-bff31c812dba?w=900&q=85" alt="Baker kneading dough" />
+        <div class="about-hero-overlay"></div>
+        <!-- Small stat badge sitting on top of the photo -->
+        <div class="about-hero-badge">
+          <strong>35+</strong>
+          <span>Years of Craft</span>
+        </div>
+      </div>
+
+      <div class="about-hero-text fu">
+        <div class="s-label">Our Story</div>
+        <h1>Baking with <em>Heart</em><br />Since 1989</h1>
+        <p>
+          What started as a grandmother's kitchen experiment has grown into the
+          neighbourhood's most beloved bakery. Three generations of passion,
+          patience, and really good butter.
+        </p>
+        <p>
+          We believe bread is more than food — it's connection, comfort, and
+          community. Every loaf, every tart, every croissant carries that belief
+          in every bite.
+        </p>
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+          <button class="btn btn-primary" onclick="showPage('menu')">Browse Our Menu</button>
+          <button class="btn btn-outline" onclick="showPage('custom')">Custom Orders</button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Story timeline -->
+    <section class="about-story">
+
+      <div>
+        <div class="s-label">Timeline</div>
+        <h2 class="s-title" style="font-size: 1.5rem;">Our Journey</h2>
+      </div>
+
+      <div class="timeline fu">
+        <div class="tl-item">
+          <div class="tl-year">1989</div>
+          <div class="tl-body">
+            <h4>The Beginning</h4>
+            <p>Marie Dupont opens a tiny boulangerie on Rue des Fleurs with a single wood-fired oven, two recipes, and an unshakeable belief in real bread.</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-year">1998</div>
+          <div class="tl-body">
+            <h4>First Expansion</h4>
+            <p>Demand grows beyond one oven. We move to a larger space and add our full pâtisserie line — tarts, croissants, and custom celebration cakes.</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-year">2005</div>
+          <div class="tl-body">
+            <h4>Second Generation</h4>
+            <p>Marie's daughter Claire joins after training in Paris, bringing new techniques and creative pastry innovation to the menu.</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-year">2015</div>
+          <div class="tl-body">
+            <h4>Award Recognition</h4>
+            <p>Named "Best Independent Bakery" by the city food guide. Our sourdough wins first place at the regional artisan bread competition.</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-year">2024</div>
+          <div class="tl-body">
+            <h4>Today</h4>
+            <p>500+ customers daily, city-wide delivery, and a fully equipped custom cake studio. Still using the same starter culture from 1989.</p>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Team section -->
+    <section class="team-sec">
+
+      <div class="tc fu">
+        <div class="s-label">Meet the Team</div>
+        <h2 class="s-title">The Hands Behind Every <em>Delicious Bite</em></h2>
+      </div>
+
+      <div class="team-grid fu" style="transition-delay: 0.1s;">
+
+        <div class="team-card">
+          <div class="team-img">
+            <img src="https://images.unsplash.com/photo-1607631568010-a87245c0daf8?w=400&q=85" alt="Marie Dupont - Head Baker" />
+          </div>
+          <div class="team-body">
+            <h3>Marie Dupont</h3>
+            <span class="role">Founder & Head Baker</span>
+            <p>35 years of magic in every loaf. Her sourdough starter is older than most of our staff.</p>
+          </div>
+        </div>
+
+        <div class="team-card">
+          <div class="team-img">
+            <img src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=400&q=85" alt="Claire Dupont - Head Patissiere" />
+          </div>
+          <div class="team-body">
+            <h3>Claire Dupont</h3>
+            <span class="role">Head Pâtissière</span>
+            <p>Paris-trained, neighbourhood-raised. She turned our pastry counter into a work of art.</p>
+          </div>
+        </div>
+
+        <div class="team-card">
+          <div class="team-img">
+            <img src="https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?w=400&q=85" alt="Thomas Renard - Bread Specialist" />
+          </div>
+          <div class="team-body">
+            <h3>Thomas Renard</h3>
+            <span class="role">Bread Specialist</span>
+            <p>Obsessed with fermentation and the perfect crust. His baguette has a waiting list.</p>
+          </div>
+        </div>
+
+        <div class="team-card">
+          <div class="team-img">
+            <img src="https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=400&q=85" alt="Amelie Blanc - Cake Designer" />
+          </div>
+          <div class="team-body">
+            <h3>Amélie Blanc</h3>
+            <span class="role">Cake Designer</span>
+            <p>Every custom cake is her canvas. She brings sketches to life in sugar and buttercream.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Brand values -->
+    <section class="values-sec">
+
+      <div class="tc fu">
+        <div class="s-label" style="justify-content: center; color: var(--orange);">What We Stand For</div>
+        <h2 class="s-title" style="color: var(--cream);">Our <em style="color: var(--orange);">Values</em></h2>
+      </div>
+
+      <div class="values-grid fu" style="transition-delay: 0.1s;">
+
+        <div class="val-card">
+          <div class="val-icon">
+            <img src="https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=80&q=80" alt="Wheat field" />
+          </div>
+          <h4>Quality Ingredients</h4>
+          <p>Organic, stone-milled flour sourced from farms we know by name. No compromises.</p>
+        </div>
+
+        <div class="val-card">
+          <div class="val-icon">
+            <img src="https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?w=80&q=80" alt="Bread loaf" />
+          </div>
+          <h4>Zero Waste</h4>
+          <p>Day-old bread becomes croutons and puddings. Unsold goods go to local shelters nightly.</p>
+        </div>
+
+        <div class="val-card">
+          <div class="val-icon">
+            <img src="https://images.unsplash.com/photo-1556742031-c6961e8560b0?w=80&q=80" alt="Community" />
+          </div>
+          <h4>Community First</h4>
+          <p>Baking isn't just business — it's responsibility. We exist to nourish our neighbourhood.</p>
+        </div>
+
+        <div class="val-card">
+          <div class="val-icon">
+            <img src="https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=80&q=80" alt="Handmade" />
+          </div>
+          <h4>Made with Love</h4>
+          <p>Every product is touched by human hands. No shortcuts, no conveyor belts, ever.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <div id="afoot"></div>
+  </div>
+  <!-- END about page -->
+
+
+  <!-- ============================================================
+       PAGE: CUSTOM ORDERS
+       Occasion selector cards + order form.
+  ============================================================ -->
+  <div class="page" id="custom">
+
+    <!-- Full-bleed hero with photo background -->
+    <div class="custom-hero">
+      <img class="custom-hero-bg" src="https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=1400&q=85" alt="Baker decorating a custom cake" />
+      <div class="custom-hero-overlay"></div>
+      <div class="custom-hero-content">
+        <div class="s-label">Made Just for You</div>
+        <h1>Custom <em>Cake</em> Studio</h1>
+        <p>
+          From intimate birthday cakes to grand wedding centrepieces — tell us your
+          vision, and we'll bake it into reality. Every custom order is a personal collaboration.
+        </p>
+        <button class="btn btn-secondary">↓ Start Your Order</button>
+      </div>
+    </div>
+
+    <!-- Occasion selector cards -->
+    <section class="options-sec">
+
+      <div class="tc fu">
+        <div class="s-label">Choose Your Occasion</div>
+        <h2 class="s-title">What Are We <em>Celebrating?</em></h2>
+      </div>
+
+      <!-- Clicking a card calls selOccasion() and highlights it -->
+      <div class="options-grid fu" style="transition-delay: 0.1s;">
+
+        <div class="opt-card" onclick="selOccasion(this, 'Birthday')">
+          <img class="opt-img" src="https://images.unsplash.com/photo-1558636508-e0db3814bd1d?w=500&q=85" alt="Birthday cake" />
+          <div class="opt-body">
+            <h3>Birthday Cakes</h3>
+            <p>Custom tiered cakes with your choice of flavour, frosting, and decoration.</p>
+            <div class="opt-price">From $65</div>
+          </div>
+        </div>
+
+        <div class="opt-card" onclick="selOccasion(this, 'Wedding')">
+          <img class="opt-img" src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=500&q=85" alt="Wedding cake" />
+          <div class="opt-body">
+            <h3>Wedding Cakes</h3>
+            <p>Multi-tiered showstoppers with sugar flowers, hand-painted details, or minimalist elegance.</p>
+            <div class="opt-price">From $250</div>
+          </div>
+        </div>
+
+        <div class="opt-card" onclick="selOccasion(this, 'Corporate')">
+          <img class="opt-img" src="https://images.unsplash.com/photo-1486427944299-d1955d23e34d?w=500&q=85" alt="Corporate pastry catering" />
+          <div class="opt-body">
+            <h3>Corporate Events</h3>
+            <p>Branded cakes, large-quantity pastry platters, and catering packages for your team.</p>
+            <div class="opt-price">From $120</div>
+          </div>
+        </div>
+
+        <div class="opt-card" onclick="selOccasion(this, 'Anniversary')">
+          <img class="opt-img" src="https://images.unsplash.com/photo-1535254973040-607b474cb50d?w=500&q=85" alt="Anniversary cake" />
+          <div class="opt-body">
+            <h3>Anniversary</h3>
+            <p>Romantic, elegant cakes for celebrating your love — big milestone or intimate dinner.</p>
+            <div class="opt-price">From $75</div>
+          </div>
+        </div>
+
+        <div class="opt-card" onclick="selOccasion(this, 'Baby Shower')">
+          <img class="opt-img" src="https://images.unsplash.com/photo-1607478900766-efe13248b125?w=500&q=85" alt="Baby shower cake" />
+          <div class="opt-body">
+            <h3>Baby Shower</h3>
+            <p>Gender reveal cakes, cute character designs, and pastel-themed dessert tables.</p>
+            <div class="opt-price">From $60</div>
+          </div>
+        </div>
+
+        <div class="opt-card" onclick="selOccasion(this, 'Other')">
+          <img class="opt-img" src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=500&q=85" alt="Custom celebration cake" />
+          <div class="opt-body">
+            <h3>Something Else?</h3>
+            <p>Graduation, retirement, holidays — if you're celebrating, we're baking. Just ask!</p>
+            <div class="opt-price">Custom quote</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Order form -->
+    <section class="form-sec">
+
+      <h2>Place Your Custom Order</h2>
+      <p class="sub">Fill in the details below and we'll get back to you within 24 hours with a personalised quote.</p>
+
+      <div class="form-box">
+
+        <!-- Row 1: Name fields -->
+        <div class="f-row">
+          <div class="f-grp">
+            <label for="cf_fn">First Name</label>
+            <input type="text" id="cf_fn" placeholder="Sophie" />
+          </div>
+          <div class="f-grp">
+            <label for="cf_ln">Last Name</label>
+            <input type="text" id="cf_ln" placeholder="Martin" />
+          </div>
+        </div>
+
+        <!-- Row 2: Contact info -->
+        <div class="f-row">
+          <div class="f-grp">
+            <label for="cf_em">Email</label>
+            <input type="email" id="cf_em" placeholder="sophie@example.com" />
+          </div>
+          <div class="f-grp">
+            <label for="cf_ph">Phone</label>
+            <input type="tel" id="cf_ph" placeholder="(555) 000-0000" />
+          </div>
+        </div>
+
+        <!-- Row 3: Event details -->
+        <div class="f-row">
+          <div class="f-grp">
+            <label for="cf_dt">Event Date</label>
+            <input type="date" id="cf_dt" />
+          </div>
+          <div class="f-grp">
+            <label for="cf_oc">Occasion</label>
+            <select id="cf_oc">
+              <option>Birthday</option>
+              <option>Wedding</option>
+              <option>Anniversary</option>
+              <option>Baby Shower</option>
+              <option>Corporate</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Row 4: Cake size and budget -->
+        <div class="f-row">
+          <div class="f-grp">
+            <label>Number of Tiers</label>
+            <select>
+              <option>1 tier (serves 10–15)</option>
+              <option>2 tiers (serves 20–30)</option>
+              <option>3 tiers (serves 40–60)</option>
+              <option>4+ tiers (serves 80+)</option>
+            </select>
+          </div>
+          <div class="f-grp">
+            <label>Budget Range</label>
+            <select>
+              <option>$50–$100</option>
+              <option>$100–$200</option>
+              <option>$200–$400</option>
+              <option>$400–$700</option>
+              <option>$700+</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Flavour chip selector -->
+        <div class="f-grp">
+          <label>Preferred Flavours</label>
+          <div class="flavors">
+            <!-- Each chip toggles the 'sel' class when clicked -->
+            <div class="flv" onclick="this.classList.toggle('sel')">Vanilla</div>
+            <div class="flv" onclick="this.classList.toggle('sel')">Chocolate</div>
+            <div class="flv" onclick="this.classList.toggle('sel')">Red Velvet</div>
+            <div class="flv" onclick="this.classList.toggle('sel')">Lemon</div>
+            <div class="flv" onclick="this.classList.toggle('sel')">Strawberry</div>
+            <div class="flv" onclick="this.classList.toggle('sel')">Carrot</div>
+            <div class="flv" onclick="this.classList.toggle('sel')">Almond</div>
+            <div class="flv" onclick="this.classList.toggle('sel')">Not Sure</div>
+          </div>
+        </div>
+
+        <!-- Design description text area -->
+        <div class="f-grp">
+          <label for="cf_des">Design Description</label>
+          <textarea id="cf_des" placeholder="Describe your dream cake! Colours, themes, any photos or inspiration references... The more detail, the better."></textarea>
+        </div>
+
+        <button class="btn btn-primary" style="width: 100%; justify-content: center; padding: 13px;" onclick="submitCustom()">
+          Send My Order Request →
+        </button>
+
+      </div>
+    </section>
+
+    <div id="cfoot"></div>
+  </div>
+  <!-- END custom page -->
+
+
+  <!-- ============================================================
+       PAGE: GALLERY
+       Masonry photo grid with category filters + Instagram grid.
+  ============================================================ -->
+  <div class="page" id="gallery">
+
+    <div class="gallery-hero">
+      <div class="s-label" style="justify-content: center;">Our Portfolio</div>
+      <h1 class="s-title tc" style="font-size: clamp(2rem, 5vw, 3.2rem);">
+        A Feast for <em>the Eyes</em>
+      </h1>
+      <p class="s-sub" style="margin: 0.6rem auto 0; text-align: center;">
+        From everyday bakes to bespoke masterpieces — every creation tells a story.
+      </p>
+
+      <!-- Filter buttons — call filterGal() in script.js -->
+      <div class="gal-filter">
+        <button class="tab-btn active" onclick="filterGal('all',     this)">All</button>
+        <button class="tab-btn"        onclick="filterGal('cakes',   this)">Cakes</button>
+        <button class="tab-btn"        onclick="filterGal('pastries',this)">Pastries</button>
+        <button class="tab-btn"        onclick="filterGal('breads',  this)">Breads</button>
+        <button class="tab-btn"        onclick="filterGal('interior',this)">Bakery</button>
+      </div>
+    </div>
+
+    <!-- Gallery grid — images injected by script.js (renderGallery) -->
+    <div class="gallery-grid" id="galGrid"></div>
+
+    <!-- Instagram-style grid at the bottom -->
+    <section class="insta-sec">
+      <h2>Follow Us on Instagram</h2>
+      <p>Daily bakes, behind-the-scenes moments, and beautiful food photography
+        <span class="insta-handle">@lepetitfour</span>
+      </p>
+      <!-- Instagram images injected by script.js -->
+      <div class="insta-grid" id="igGrid"></div>
+    </section>
+
+    <div id="gfoot"></div>
+  </div>
+  <!-- END gallery page -->
+
+
+  <!-- ============================================================
+       PAGE: CONTACT
+       Split layout: photo + info left, form right.
+  ============================================================ -->
+  <div class="page" id="contact">
+
+    <div class="contact-split">
+
+      <!-- Left: hero photo with contact info overlaid -->
+      <div class="contact-left">
+        <img class="contact-left-img" src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&q=85" alt="Bakery interior" />
+        <div class="contact-left-overlay"></div>
+
+        <div class="contact-left-content">
+          <h1>Visit Us or <em>Get in Touch</em></h1>
+          <p>We love hearing from you! Whether it's a question about our menu, a custom order, or just to say hello — we're here.</p>
+
+          <div class="ci-cards">
+
+            <!-- Address -->
+            <div class="ci">
+              <div class="ci-icon">
+                <svg viewBox="0 0 24 24">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+              </div>
+              <div class="ci-text">
+                <h4>Address</h4>
+                <p>48 Rue des Fleurs, Old Town<br />San Francisco, CA 94102</p>
+              </div>
+            </div>
+
+            <!-- Opening hours -->
+            <div class="ci">
+              <div class="ci-icon">
+                <svg viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+              </div>
+              <div class="ci-text">
+                <h4>Opening Hours</h4>
+                <p>Mon–Fri: 6:00 AM – 7:00 PM<br />Sat: 6:00 AM – 6:00 PM<br />Sun: 7:00 AM – 3:00 PM</p>
+              </div>
+            </div>
+
+            <!-- Phone -->
+            <div class="ci">
+              <div class="ci-icon">
+                <svg viewBox="0 0 24 24">
+                  <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 014.14 12a19.79 19.79 0 01-3.07-8.67A2 2 0 013.04 1.25h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L7.09 9.15a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0121 16.92z" />
+                </svg>
+              </div>
+              <div class="ci-text">
+                <h4>Phone</h4>
+                <p>(555) 012-3456</p>
+              </div>
+            </div>
+
+            <!-- Email -->
+            <div class="ci">
+              <div class="ci-icon">
+                <svg viewBox="0 0 24 24">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                  <polyline points="22,6 12,13 2,6" />
+                </svg>
+              </div>
+              <div class="ci-text">
+                <h4>Email</h4>
+                <p><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2e464b4242416e424b5e4b5a475a48415b5c004d4143">[email&#160;protected]</a></p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: map preview + contact form -->
+      <div class="contact-right">
+
+        <!-- Map image as a decorative placeholder (a real project would use Google Maps embed) -->
+        <div class="map-box">
+          <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?w=800&q=85" alt="Map view of our location" />
+          <div class="map-pin-overlay">
+            <span>📍</span>
+          </div>
+        </div>
+
+        <h2>Send Us a Message</h2>
+        <p class="sub">We'll get back to you within one business day.</p>
+
+        <!-- Contact form -->
+        <div class="f-row" style="margin-bottom: 0;">
+          <div class="f-grp">
+            <label for="ctf_n">Name</label>
+            <input type="text" id="ctf_n" placeholder="Your full name" />
+          </div>
+          <div class="f-grp">
+            <label for="ctf_e">Email</label>
+            <input type="email" id="ctf_e" placeholder="your@email.com" />
+          </div>
+        </div>
+
+        <div class="f-grp">
+          <label for="ctf_s">Subject</label>
+          <select id="ctf_s">
+            <option>General Enquiry</option>
+            <option>Custom Order</option>
+            <option>Delivery Question</option>
+            <option>Feedback</option>
+            <option>Press / Media</option>
+          </select>
+        </div>
+
+        <div class="f-grp">
+          <label for="ctf_m">Message</label>
+          <textarea id="ctf_m" placeholder="How can we help you today?"></textarea>
+        </div>
+
+        <button class="btn btn-primary" style="width: 100%; justify-content: center; padding: 13px;" onclick="submitContact()">
+          Send Message →
+        </button>
+
+      </div>
+
+    </div>
+
+    <div id="ctfoot"></div>
+  </div>
+  <!-- END contact page -->
+
+
+  <!-- ============================================================
+       SHOPPING CART SIDEBAR
+       Slides in from the right when cart icon is clicked.
+  ============================================================ -->
+
+  <!-- Dark overlay behind the cart -->
+  <div class="cart-overlay" id="cartOvr" onclick="toggleCart()"></div>
+
+  <div class="cart-side" id="cartSide">
+
+    <div class="cart-head">
+      <h3>Your Order</h3>
+      <button class="cart-x" onclick="toggleCart()">✕</button>
+    </div>
+
+    <!-- Cart items are injected here by renderCart() in script.js -->
+    <div class="cart-items-list" id="cartList"></div>
+
+    <div class="cart-foot">
+      <div class="cart-total">
+        <span>Total</span>
+        <strong id="cartTot">$0.00</strong>
+      </div>
+      <button class="checkout-btn" onclick="checkout()">Proceed to Checkout →</button>
+    </div>
+
+  </div>
+
+
+  <!-- ============================================================
+       TOAST NOTIFICATION
+       Small popup at the bottom that shows feedback messages.
+  ============================================================ -->
+  <div class="toast" id="toast">
+    <span id="toastMsg"></span>
+  </div>
+
+
+  <!
+  <!-- Main site scripts -->
+  <script src="script.js"></script>
+
+  <!-- Splash screen JS -->
+  <script>
+    function enterSite() {
+      var splash = document.getElementById('splash');
+      splash.classList.add('exit');
+      setTimeout(function() {
+        splash.style.display = 'none';
+        document.body.style.overflow = 'auto';
+      }, 900);
+    }
+    /* Press Escape / Enter / Space to skip */
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') enterSite();
+    });
+  </script>
+
+</body>
+</html>
